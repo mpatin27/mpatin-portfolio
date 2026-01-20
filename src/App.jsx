@@ -1,8 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import Navbar from './components/NavBar'
+import Navbar from './components/Navbar'
 import Footer from './components/Footer' // 1. On importe le Footer
 
-// ... imports des pages (Home, Portfolio, etc.)
 import Home from './pages/Home'
 import Portfolio from './pages/Portfolio'
 import CV from './pages/CV'
