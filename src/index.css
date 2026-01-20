@@ -11,3 +11,23 @@
   0%, 100% { opacity: 1; }
   50% { opacity: 0; }
 }
+
+/* Scanlines effect (Lignes horizontales style TV) */
+.scanlines {
+  background: linear-gradient(
+    to bottom,
+    rgba(255,255,255,0),
+    rgba(255,255,255,0) 50%,
+    rgba(0,0,0,0.2) 50%,
+    rgba(0,0,0,0.2)
+  );
+  background-size: 100% 4px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none; /* Important pour pouvoir cliquer à travers ! */
+  z-index: 50;
+  opacity: 0.15; /* Très subtil */
+}
