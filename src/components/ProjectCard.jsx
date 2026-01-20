@@ -1,56 +1,45 @@
 function ProjectCard({ title, description, cover, tags, links }) {
   return (
-    // Container de la carte : blanc, bords arrondis, ombre, effet de levier au survol
-    <article className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 flex flex-col h-full">
+    // Style : Bordure fine, fond sombre, effet hover vert fluo
+    <article className="bg-slate-900 border border-slate-700 rounded-lg overflow-hidden hover:border-green-500 transition-colors duration-300 flex flex-col h-full group">
       
-      {/* Image : hauteur fixe (48), largeur 100%, mode "cover" pour ne pas déformer */}
-      <div className="h-48 overflow-hidden">
+      {/* Image avec filtre léger qui s'enlève au survol */}
+      <div className="h-48 overflow-hidden relative border-b border-slate-700">
+        <div className="absolute inset-0 bg-green-900/20 group-hover:bg-transparent transition-colors z-10" />
         <img 
           src={cover} 
           alt={`Projet ${title}`} 
-          className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+          className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
         />
       </div>
 
-      {/* Contenu textuel */}
       <div className="p-5 flex flex-col flex-grow">
-        <h3 className="text-xl font-bold text-gray-800 mb-2">{title}</h3>
+        <h3 className="text-xl font-bold text-green-400 mb-2 group-hover:text-green-300">
+          <span className="text-slate-500 mr-2">./</span>{title}
+        </h3>
         
-        {/* Tags : flex-wrap pour passer à la ligne si trop de tags */}
         <div className="flex flex-wrap gap-2 mb-4">
           {tags.map((tag, index) => (
-            <span 
-              key={index} 
-              className="px-3 py-1 bg-blue-100 text-blue-600 text-xs font-semibold rounded-full"
-            >
+            <span key={index} className="text-xs font-bold text-slate-400 border border-slate-600 px-2 py-1 rounded bg-slate-800">
               {tag}
             </span>
           ))}
         </div>
 
-        <p className="text-gray-600 mb-6 flex-grow">{description}</p>
+        <p className="text-slate-400 text-sm mb-6 flex-grow leading-relaxed">
+          {description}
+        </p>
 
-        {/* Boutons : alignés en bas */}
-        <div className="flex gap-4 mt-auto">
+        <div className="flex gap-3 mt-auto">
           {links.demo && (
-            <a 
-              href={links.demo} 
-              target="_blank" 
-              rel="noreferrer"
-              className="flex-1 text-center bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 rounded-lg transition-colors"
-            >
-              Voir le site
+            <a href={links.demo} target="_blank" rel="noreferrer" className="flex-1 text-center bg-green-700/20 border border-green-600 text-green-400 hover:bg-green-600 hover:text-black py-2 rounded transition-all text-sm font-bold">
+              LIVE DEMO
             </a>
           )}
           
           {links.repo && (
-            <a 
-              href={links.repo} 
-              target="_blank" 
-              rel="noreferrer"
-              className="flex-1 text-center border border-gray-300 hover:bg-gray-50 text-gray-700 font-medium py-2 rounded-lg transition-colors"
-            >
-              Code
+            <a href={links.repo} target="_blank" rel="noreferrer" className="flex-1 text-center border border-slate-600 text-slate-400 hover:border-slate-400 hover:text-white py-2 rounded transition-all text-sm">
+              GITHUB
             </a>
           )}
         </div>
