@@ -4,6 +4,7 @@ import PDFModal from '../components/PDFModal';
 import PageTransition from '../components/PageTransition';
 import { motion } from 'framer-motion';
 import QRCode from 'qrcode';
+import SEO from '../components/SEO';
 
 export default function CV() {
   const [profile, setProfile] = useState(null);
@@ -102,6 +103,11 @@ export default function CV() {
 
   return (
     <PageTransition>
+      <SEO
+        title="CV - Mon Parcours"
+        description="Découvrez mon parcours professionnel, mes expériences, formations et compétences."
+      />
+
       <div className="max-w-6xl mx-auto px-4 py-12 font-mono">
         <div className="mb-10 border-b border-slate-800 pb-4">
           <p className="text-green-500 mb-2">root@matheo:~/cv # <span className="text-white">./display_profile.sh --full</span></p>

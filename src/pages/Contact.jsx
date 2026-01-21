@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import emailjs from '@emailjs/browser';
 import PageTransition from '../components/PageTransition';
+import SEO from '../components/SEO';
 
 export default function Contact() {
   const form = useRef();
@@ -70,6 +71,10 @@ export default function Contact() {
 
   return (
     <PageTransition>
+      <SEO
+        title="Contact - Me Contacter"
+        description="Envoyez-moi un message direct via le formulaire de contact sécurisé."
+      />
       <div className="max-w-5xl mx-auto px-4 py-12 font-mono">
         
         {/* Header */}
