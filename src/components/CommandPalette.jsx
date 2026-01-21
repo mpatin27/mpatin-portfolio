@@ -78,7 +78,7 @@ export default function CommandPalette() {
                 <IconGithub /> <span>GitHub Profile</span>
               </Item>
               
-              <Item onSelect={() => runCommand(() => window.open('https://linkedin.com/in/ton-linkedin', '_blank'))}>
+              <Item onSelect={() => runCommand(() => window.open('www.linkedin.com/in/patin-matheo', '_blank'))}>
                 <IconLinkedin /> <span>LinkedIn</span>
               </Item>
 
