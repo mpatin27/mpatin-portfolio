@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import PageTransition from '../components/PageTransition';
 import { motion } from 'framer-motion';
+import SEO from '../components/SEO.jsx';
 
 // --- 1. ARRIÈRE-PLAN : VRAI TERMINAL SIMULÉ ---
 const TerminalBackground = () => {
@@ -46,13 +47,13 @@ const TerminalBackground = () => {
       if (action.type === 'input') {
         // --- MODE COMMANDE (Frappe clavier) ---
         setIsTyping(true);
-        
+
         if (charIndex < action.content.length) {
           // On ajoute un caractère
           setCurrentLine(action.content.substring(0, charIndex + 1));
           charIndex++;
           // Vitesse de frappe variable pour faire réaliste
-          timeoutId = setTimeout(processStep, 50 + Math.random() * 80); 
+          timeoutId = setTimeout(processStep, 50 + Math.random() * 80);
         } else {
           // Commande finie
           setIsTyping(false);
@@ -83,7 +84,7 @@ const TerminalBackground = () => {
   return (
     <div className="absolute inset-0 z-0 p-6 md:p-10 overflow-hidden bg-[#0a0a0a] font-mono text-xs md:text-sm leading-relaxed pointer-events-none select-none opacity-30">
       <div className="max-w-4xl">
-        
+
         {/* Historique des lignes passées */}
         {history.map((line, i) => (
           <div key={i} className={`${line.type === 'input' ? 'mt-4' : ''}`}>
@@ -141,13 +142,19 @@ const TypingSubtitle = () => {
 export default function Home() {
   return (
     <PageTransition>
+
+      <SEO
+        title="Accueil"
+        description="Bienvenue sur mon terminal. Tapez une commande ou explorez mon portfolio SysAdmin & Dev."
+      />
+
       <div className="relative min-h-[85vh] flex items-center justify-center p-4">
-        
+
         {/* LE FOND TERMINAL (Z-Index 0) */}
         <TerminalBackground />
 
         {/* LA FENÊTRE APP (Z-Index 10) */}
-        <motion.div 
+        <motion.div
           initial={{ scale: 0.95, opacity: 0, y: 30 }}
           animate={{ scale: 1, opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: "easeOut" }}
@@ -168,7 +175,7 @@ export default function Home() {
 
           {/* Contenu principal */}
           <div className="p-10 md:p-16 text-center space-y-8">
-            
+
             {/* Status */}
             <div>
               <span className="text-green-500 font-mono font-bold text-sm tracking-widest uppercase">
@@ -179,8 +186,8 @@ export default function Home() {
             {/* Titres */}
             <div className="space-y-4">
               <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 tracking-tight">
-              Mathéo <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-blue-500">PATIN</span>
-            </h1>
+                Mathéo <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-blue-500">PATIN</span>
+              </h1>
               <div>
                 <TypingSubtitle />
               </div>
@@ -193,15 +200,15 @@ export default function Home() {
 
             {/* Boutons Actions */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4 font-mono text-sm">
-              <Link 
-                to="/portfolio" 
+              <Link
+                to="/portfolio"
                 className="group px-8 py-4 rounded border border-green-500/50 text-green-400 hover:bg-green-500/10 transition-all shadow-[0_0_15px_rgba(34,197,94,0.1)] hover:shadow-[0_0_25px_rgba(34,197,94,0.2)]"
               >
                 ./voir_projets.sh
               </Link>
-              
-              <Link 
-                to="/cv" 
+
+              <Link
+                to="/cv"
                 className="group px-8 py-4 rounded border border-slate-700 text-slate-300 hover:bg-slate-800 hover:text-white transition-all"
               >
                 cat cv.pdf
