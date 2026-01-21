@@ -12,10 +12,33 @@ export default function CV() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [qrCodeData, setQrCodeData] = useState('');
 
-  // Mets ton URL Vercel finale ici pour le QR Code
   const PORTFOLIO_URL = "https://mpatin-portfolio.vercel.app";
 
-  // Fonction Calcul Âge Précis
+  // --- NOUVELLE LOGIQUE DE TRI ---
+  const getSortValue = (item) => {
+    const range = (item.date_range || '').toLowerCase();
+    
+    // 1. PIN : Si contient "Maintenant", "En cours", etc. -> Priorité Max
+    if (range.includes('maintenant') || range.includes('en cours') || range.includes('présent') || range.includes('now')) {
+      return 99999; 
+    }
+
+    // 2. Date de fin : On cherche les années (4 chiffres) dans le texte
+    const years = range.match(/(\d{4})/g);
+    
+    if (years && years.length > 0) {
+      // On prend la DERNIÈRE année trouvée (supposée être la date de fin)
+      return parseInt(years[years.length - 1], 10);
+    }
+
+    // 3. Fallback : Si pas de date dans le texte, on utilise la start_date de la BDD
+    if (item.start_date) {
+      return new Date(item.start_date).getFullYear();
+    }
+    
+    return 0;
+  };
+
   const calculateAge = (birthDateString) => {
     if (!birthDateString) return 0;
     const today = new Date();
@@ -26,7 +49,6 @@ export default function CV() {
     return age;
   };
 
-  // Fonction Couleur Statut
   const getStatusColor = (status) => {
     if (!status) return 'bg-slate-500';
     const s = status.toLowerCase();
@@ -43,18 +65,24 @@ export default function CV() {
       const { data: pData } = await supabase.from('profile').select('*').single();
       if(pData) setProfile(pData);
       
-      // 2. CV Items
-      const { data: cData } = await supabase.from('cv_items').select('*').order('start_date', { ascending: false });
-      if(cData) setCvItems(cData);
+      // 2. CV Items (On récupère tout, on triera en JS ensuite)
+      const { data: cData } = await supabase.from('cv_items').select('*');
+      
+      if(cData) {
+        // APPLICATION DU TRI ICI
+        const sortedData = cData.sort((a, b) => {
+            const valA = getSortValue(a);
+            const valB = getSortValue(b);
+            return valB - valA; // Descending (Plus grand/récent en premier)
+        });
+        setCvItems(sortedData);
+      }
 
-      // 3. Génération QR Code
+      // 3. QR Code
       try {
         const url = await QRCode.toDataURL(PORTFOLIO_URL, {
           margin: 1,
-          color: {
-            dark: '#111827', // Noir (Texte Slate-900)
-            light: '#00000000' // Transparent
-          }
+          color: { dark: '#111827', light: '#00000000' }
         });
         setQrCodeData(url);
       } catch (err) {
@@ -88,7 +116,6 @@ export default function CV() {
               
               {loading ? <p className="text-slate-500 animate-pulse">Scanning...</p> : (
                 <>
-                  {/* PHOTO DE PROFIL WEB */}
                   {profile?.avatar_url && (
                     <div className="flex justify-center mb-6">
                       <div className="relative">
@@ -96,29 +123,29 @@ export default function CV() {
                         <img 
                           src={profile.avatar_url} 
                           alt="Profile" 
-                          className="relative w-50 h-50 object-cover rounded-full border-4 border-slate-800 shadow-2xl"
+                          className="relative w-32 h-32 object-cover rounded-full border-4 border-slate-800 shadow-2xl"
                         />
                       </div>
                     </div>
                   )}
 
                   <ul className="space-y-4 text-sm text-slate-300">
-                    <li><span className="text-slate-500 block text-xs uppercase mb-1">Nom / Rôle</span><span className="text-white font-bold text-2xl">{profile?.full_name}</span><div className="text-green-400 text-s">{profile?.role}</div></li>
+                    <li><span className="text-slate-500 block text-xs uppercase mb-1">Name / Role</span><span className="text-white font-bold text-xl">{profile?.full_name}</span><div className="text-green-400 text-xs">{profile?.role}</div></li>
                     <li className="grid grid-cols-2 gap-2">
-                       <div><span className="text-slate-500 block text-xs uppercase mb-1">Âge</span><span>{age} ans</span></div>
-                       <div><span className="text-slate-500 block text-xs uppercase mb-1">Localisation</span>{profile?.location}</div>
+                       <div><span className="text-slate-500 block text-xs uppercase mb-1">Age</span><span>{age} ans</span></div>
+                       <div><span className="text-slate-500 block text-xs uppercase mb-1">Loc</span>{profile?.location}</div>
                     </li>
                     {profile?.email && <li><span className="text-slate-500 block text-xs uppercase mb-1">Email</span>{profile.email}</li>}
-                    {profile?.phone && <li><span className="text-slate-500 block text-xs uppercase mb-1">Téléphone</span>{profile.phone}</li>}
+                    {profile?.phone && <li><span className="text-slate-500 block text-xs uppercase mb-1">Phone</span>{profile.phone}</li>}
                     {profile?.driving_license && <li><span className="text-slate-500 block text-xs uppercase mb-1">Permis</span>{profile.driving_license}</li>}
-                    <li><span className="text-slate-500 block text-xs uppercase mb-1">Statut</span><div className="flex items-center gap-2"><span className={`inline-block w-2.5 h-2.5 rounded-full ${getStatusColor(profile?.status)} animate-pulse`}></span><span>{profile?.status}</span></div></li>
+                    <li><span className="text-slate-500 block text-xs uppercase mb-1">Status</span><div className="flex items-center gap-2"><span className={`inline-block w-2.5 h-2.5 rounded-full ${getStatusColor(profile?.status)} animate-pulse`}></span><span>{profile?.status}</span></div></li>
                   </ul>
                   
                   {profile?.languages && profile.languages.length > 0 && (<div className="mt-6 pt-4 border-t border-slate-800"><h4 className="text-slate-500 text-xs uppercase mb-2">Langues</h4><div className="flex flex-wrap gap-2">{profile.languages.map((l, i) => <span key={i} className="text-slate-300 text-xs border border-slate-700 px-2 py-1 rounded">{l}</span>)}</div></div>)}
                   
-                  {profile?.certifications && profile.certifications.length > 0 && (<div className="mt-4 pt-4 border-t border-slate-800"><h4 className="text-slate-500 text-xs uppercase mb-2">Diplômes / Certifications</h4><ul className="space-y-1">{profile.certifications.map((c, i) => (<li key={i} className="text-slate-300 text-xs flex items-start gap-2"><span className="text-blue-500">✓</span> {c}</li>))}</ul></div>)}
+                  {profile?.certifications && profile.certifications.length > 0 && (<div className="mt-4 pt-4 border-t border-slate-800"><h4 className="text-slate-500 text-xs uppercase mb-2">Diplômes / Certifs</h4><ul className="space-y-1">{profile.certifications.map((c, i) => (<li key={i} className="text-slate-300 text-xs flex items-start gap-2"><span className="text-blue-500">✓</span> {c}</li>))}</ul></div>)}
                   
-                  <div className="mt-4 pt-4 border-t border-slate-800"><h4 className="text-slate-500 text-xs uppercase mb-3">Compétences</h4><div className="flex flex-wrap gap-2">{profile?.hard_skills?.map((skill, i) => (<span key={i} className="bg-slate-800 text-slate-300 text-xs px-2 py-1 rounded border border-slate-700 hover:border-green-500 transition-colors cursor-default">{skill}</span>))}</div></div>
+                  <div className="mt-4 pt-4 border-t border-slate-800"><h4 className="text-slate-500 text-xs uppercase mb-3">Hard Skills</h4><div className="flex flex-wrap gap-2">{profile?.hard_skills?.map((skill, i) => (<span key={i} className="bg-slate-800 text-slate-300 text-xs px-2 py-1 rounded border border-slate-700 hover:border-green-500 transition-colors cursor-default">{skill}</span>))}</div></div>
                 </>
               )}
               
@@ -143,7 +170,13 @@ export default function CV() {
                   >
                     <div className="absolute -left-[41px] top-1 h-5 w-5 rounded-full bg-slate-900 border-4 border-slate-700 group-hover:border-blue-500 transition-colors"></div>
                     <div className="bg-slate-900/50 p-6 rounded-lg border border-slate-800 hover:border-blue-500/50 hover:bg-slate-900 transition-all duration-300">
-                      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-2 gap-2"><h3 className="text-xl font-bold text-white">{exp.title}</h3><span className="text-xs font-bold text-blue-300 bg-blue-900/20 px-3 py-1 rounded-full border border-blue-900/30 whitespace-nowrap">{exp.date_range}</span></div>
+                      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-2 gap-2">
+                        <h3 className="text-xl font-bold text-white">{exp.title}</h3>
+                        {/* Detection auto pour surligner "Maintenant" */}
+                        <span className={`text-xs font-bold px-3 py-1 rounded-full border whitespace-nowrap ${exp.date_range.toLowerCase().includes('maintenant') ? 'bg-green-500/20 text-green-400 border-green-500/50 shadow-[0_0_10px_rgba(34,197,94,0.3)]' : 'text-blue-300 bg-blue-900/20 border-blue-900/30'}`}>
+                            {exp.date_range}
+                        </span>
+                      </div>
                       <div className="flex items-center gap-2 text-blue-400 text-sm mb-4 font-bold"><span>@ {exp.place}</span></div>
                       <p className="text-slate-400 text-sm leading-relaxed whitespace-pre-line">{exp.description}</p>
                     </div>
@@ -166,7 +199,12 @@ export default function CV() {
                   >
                     <div className="absolute -left-[41px] top-1 h-5 w-5 rounded-full bg-slate-900 border-4 border-slate-700 group-hover:border-purple-500 transition-colors"></div>
                     <div className="bg-slate-900/50 p-6 rounded-lg border border-slate-800 hover:border-purple-500/50 hover:bg-slate-900 transition-all duration-300">
-                      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-2 gap-2"><h3 className="text-xl font-bold text-white">{edu.title}</h3><span className="text-xs font-bold text-purple-300 bg-purple-900/20 px-3 py-1 rounded-full border border-purple-900/30 whitespace-nowrap">{edu.date_range}</span></div>
+                      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-2 gap-2">
+                          <h3 className="text-xl font-bold text-white">{edu.title}</h3>
+                          <span className={`text-xs font-bold px-3 py-1 rounded-full border whitespace-nowrap ${edu.date_range.toLowerCase().includes('maintenant') ? 'bg-green-500/20 text-green-400 border-green-500/50 shadow-[0_0_10px_rgba(34,197,94,0.3)]' : 'text-purple-300 bg-purple-900/20 border-purple-900/30'}`}>
+                            {edu.date_range}
+                          </span>
+                      </div>
                       <div className="flex items-center gap-2 text-purple-400 text-sm mb-4 font-bold"><span>@ {edu.place}</span></div>
                       {edu.description && <p className="text-slate-500 text-sm leading-relaxed border-t border-slate-800/50 pt-3 mt-3 whitespace-pre-line">{edu.description}</p>}
                     </div>
@@ -177,7 +215,6 @@ export default function CV() {
           </div>
         </div>
         
-        {/* MODAL AVEC PROP QRCODE */}
         <PDFModal 
             isOpen={isModalOpen} 
             onClose={() => setIsModalOpen(false)} 
