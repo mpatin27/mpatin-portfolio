@@ -1,27 +1,72 @@
-import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 
 export default function NotFound() {
-  return (
-    <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4 font-mono">
-      <h1 className="text-6xl font-bold text-red-500 mb-4">404</h1>
-      <p className="text-xl text-slate-300 mb-8">
-        <span className="text-red-400">Error:</span> Command not found or directory does not exist.
-      </p>
-      
-      <div className="bg-slate-900 p-6 rounded border border-slate-700 max-w-md w-full text-left mb-8 shadow-lg">
-        <p className="text-slate-500 mb-2"># System Diagnostic:</p>
-        <p className="text-green-400">$ whoami</p>
-        <p className="text-slate-300 mb-2">visitor</p>
-        <p className="text-green-400">$ whereis page</p>
-        <p className="text-red-400 mb-2">page: not found in /var/www/portfolio</p>
-      </div>
+  const navigate = useNavigate();
+  const [countdown, setCountdown] = useState(10);
 
-      <Link 
-        to="/" 
-        className="px-6 py-3 bg-green-600 text-black font-bold rounded hover:bg-green-500 transition-colors"
+  useEffect(() => {
+    // Compte à rebours
+    const timer = setInterval(() => {
+      setCountdown((prev) => prev - 1);
+    }, 1000);
+
+    // Redirection à la fin
+    const redirect = setTimeout(() => {
+      navigate('/');
+    }, 10000);
+
+    return () => {
+      clearInterval(timer);
+      clearTimeout(redirect);
+    };
+  }, [navigate]);
+
+  return (
+    <div className="min-h-screen flex items-center justify-center p-4 font-mono text-red-500 relative overflow-hidden">
+      {/* Fond bruité / Scanlines */}
+      <div className="absolute inset-0 pointer-events-none opacity-10 bg-[url('https://grainy-gradients.vercel.app/noise.svg')]"></div>
+
+      <motion.div 
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        className="max-w-2xl w-full border border-red-600/50 bg-black/90 p-8 rounded shadow-[0_0_50px_rgba(220,38,38,0.5)]"
       >
-        cd ~/home
-      </Link>
+        <h1 className="text-6xl font-bold mb-4 animate-pulse">404_ERROR</h1>
+        <h2 className="text-2xl mb-8 border-b border-red-800 pb-4">CRITICAL_PROCESS_DIED</h2>
+
+        <div className="space-y-2 text-sm md:text-base text-red-400">
+          <p>&gt; System halted due to fatal exception at 0x00000000.</p>
+          <p>&gt; The requested resource could not be located in the memory map.</p>
+          <p>&gt; Dumping physical memory to disk...</p>
+        </div>
+
+        <div className="mt-8 p-4 bg-red-900/20 border border-red-800 rounded">
+          <p className="mb-2 uppercase tracking-widest text-xs">Auto-Recovery Sequence</p>
+          <div className="w-full bg-red-900/30 h-2 rounded overflow-hidden">
+             <motion.div 
+               className="h-full bg-red-500"
+               initial={{ width: "100%" }}
+               animate={{ width: "0%" }}
+               transition={{ duration: 10, ease: "linear" }}
+             />
+          </div>
+          <p className="mt-2 text-right text-xs">
+            Rebooting system in <span className="font-bold text-white">{countdown}s</span>...
+          </p>
+        </div>
+
+        <div className="mt-8 flex gap-4">
+          <button 
+            onClick={() => navigate('/')}
+            className="px-6 py-3 bg-red-600 hover:bg-red-500 text-black font-bold rounded transition w-full"
+          >
+            FORCE_REBOOT_NOW()
+          </button>
+        </div>
+
+      </motion.div>
     </div>
-  )
+  );
 }

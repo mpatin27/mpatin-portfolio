@@ -1,49 +1,75 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import Navbar from './components/Navbar'
-import Footer from './components/Footer'
-import ProtectedRoute from './components/ProtectedRoute'
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { AnimatePresence } from 'framer-motion';
 
-import Home from './pages/Home'
-import Portfolio from './pages/Portfolio'
-import CV from './pages/CV'
-import Contact from './pages/Contact'
-import Admin from './pages/Admin'
-import Login from './pages/Login'
-import NotFound from './pages/NotFound'
+// --- PAGES ---
+import Home from './pages/Home';
+import Portfolio from './pages/Portfolio';
+import CV from './pages/CV';
+import Contact from './pages/Contact';
+import Login from './pages/Login';
+import Admin from './pages/Admin';
+import NotFound from './pages/NotFound';
+
+// --- COMPONENTS ---
+import Navbar from './components/Navbar';
+import Footer from './components/Footer';
+import ProtectedRoute from './components/ProtectedRoute';
+import CommandPalette from './components/CommandPalette';
+
+// Composant interne pour gérer les animations de routes
+// (Nécessaire car useLocation() ne fonctionne qu'à l'intérieur du Router)
+function AnimatedRoutes() {
+  const location = useLocation();
+
+  return (
+    <AnimatePresence mode="wait">
+      {/* La clé (key) force React à recharger le composant pour jouer l'animation de sortie */}
+      <Routes location={location} key={location.pathname}>
+        
+        {/* Routes Publiques */}
+        <Route path="/" element={<Home />} />
+        <Route path="/portfolio" element={<Portfolio />} />
+        <Route path="/cv" element={<CV />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/login" element={<Login />} />
+        
+        {/* Route Admin Protégée */}
+        <Route 
+          path="/admin" 
+          element={
+            <ProtectedRoute>
+              <Admin />
+            </ProtectedRoute>
+          } 
+        />
+
+        {/* Route 404 (Catch-all) */}
+        <Route path="*" element={<NotFound />} />
+
+      </Routes>
+    </AnimatePresence>
+  );
+}
 
 function App() {
   return (
     <Router>
-      {/* 2. On ajoute 'flex flex-col' pour activer le mode colonne flexible */}
-
-      <div className="scanlines"></div>
-
-      <div className="min-h-screen bg-slate-950 text-slate-300 font-mono selection:bg-green-500 selection:text-black flex flex-col">
+      <div className="min-h-screen bg-[#0B1120] text-slate-300 selection:bg-green-500/30 selection:text-green-200 font-mono flex flex-col">
         
         <Navbar />
         
-        {/* 3. On ajoute 'flex-grow' : ça dit au Main de grandir pour pousser le footer en bas */}
-        <main className="flex-grow pb-12"> 
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/portfolio" element={<Portfolio />} />
-            <Route path="/cv" element={<CV />} />
-            <Route path="/contact" element={<Contact />} />
+        {/* La Command Palette est chargée partout mais cachée par défaut (Ctrl+K) */}
+        <CommandPalette />
 
-            //Route protégée autour de l'Admin
-            <Route path="/admin" element={<ProtectedRoute><Admin /></ProtectedRoute>} />
-            
-            <Route path="/login" element={<Login />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </main>
+        <div className="flex-grow">
+          <AnimatedRoutes />
+        </div>
 
-        {/* 4. On utilise notre nouveau composant */}
         <Footer />
         
       </div>
     </Router>
-  )
+  );
 }
 
-export default App
+export default App;
