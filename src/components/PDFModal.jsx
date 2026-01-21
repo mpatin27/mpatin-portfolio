@@ -1,11 +1,10 @@
 import React from 'react';
-import { PDFViewer, PDFDownloadLink } from '@react-pdf/renderer'; // On ajoute PDFDownloadLink
+import { PDFViewer, PDFDownloadLink } from '@react-pdf/renderer';
 import { CVPDF } from './CVPDF';
 
-export default function PDFModal({ isOpen, onClose, profile, cvItems }) {
+export default function PDFModal({ isOpen, onClose, profile, cvItems, qrCodeUrl }) {
   if (!isOpen) return null;
 
-  // Génération dynamique du nom de fichier : "CV_Matheo_Patin.pdf"
   const fileName = `CV_${profile?.full_name ? profile.full_name.replace(/\s+/g, '_') : 'Portfolio'}.pdf`;
 
   return (
@@ -21,9 +20,9 @@ export default function PDFModal({ isOpen, onClose, profile, cvItems }) {
           
           <div className="flex gap-4 items-center">
              
-             {/* NOUVEAU BOUTON TÉLÉCHARGER (Nom forcé) */}
+             {/* BOUTON TÉLÉCHARGER AVEC NOM FORCÉ */}
              <PDFDownloadLink
-               document={<CVPDF profile={profile} cvItems={cvItems} />}
+               document={<CVPDF profile={profile} cvItems={cvItems} qrCodeUrl={qrCodeUrl} />}
                fileName={fileName}
                className="bg-green-600 hover:bg-green-500 text-black font-bold py-2 px-4 rounded text-xs font-mono flex items-center gap-2 transition"
              >
@@ -45,10 +44,10 @@ export default function PDFModal({ isOpen, onClose, profile, cvItems }) {
           </div>
         </div>
 
-        {/* LECTEUR PDF (Pour la lecture seule) */}
+        {/* LECTEUR PDF */}
         <div className="flex-grow bg-slate-800 relative">
           <PDFViewer width="100%" height="100%" className="border-none" showToolbar={true}>
-            <CVPDF profile={profile} cvItems={cvItems} />
+            <CVPDF profile={profile} cvItems={cvItems} qrCodeUrl={qrCodeUrl} />
           </PDFViewer>
         </div>
 
