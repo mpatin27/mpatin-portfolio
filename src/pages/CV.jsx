@@ -103,22 +103,22 @@ export default function CV() {
                   )}
 
                   <ul className="space-y-4 text-sm text-slate-300">
-                    <li><span className="text-slate-500 block text-xs uppercase mb-1">Name / Role</span><span className="text-white font-bold text-2xl">{profile?.full_name}</span><div className="text-green-400 text-s">{profile?.role}</div></li>
+                    <li><span className="text-slate-500 block text-xs uppercase mb-1">Nom / Rôle</span><span className="text-white font-bold text-2xl">{profile?.full_name}</span><div className="text-green-400 text-s">{profile?.role}</div></li>
                     <li className="grid grid-cols-2 gap-2">
-                       <div><span className="text-slate-500 block text-xs uppercase mb-1">Age</span><span>{age} ans</span></div>
-                       <div><span className="text-slate-500 block text-xs uppercase mb-1">Loc</span>{profile?.location}</div>
+                       <div><span className="text-slate-500 block text-xs uppercase mb-1">Âge</span><span>{age} ans</span></div>
+                       <div><span className="text-slate-500 block text-xs uppercase mb-1">Localisation</span>{profile?.location}</div>
                     </li>
                     {profile?.email && <li><span className="text-slate-500 block text-xs uppercase mb-1">Email</span>{profile.email}</li>}
-                    {profile?.phone && <li><span className="text-slate-500 block text-xs uppercase mb-1">Phone</span>{profile.phone}</li>}
+                    {profile?.phone && <li><span className="text-slate-500 block text-xs uppercase mb-1">Téléphone</span>{profile.phone}</li>}
                     {profile?.driving_license && <li><span className="text-slate-500 block text-xs uppercase mb-1">Permis</span>{profile.driving_license}</li>}
-                    <li><span className="text-slate-500 block text-xs uppercase mb-1">Status</span><div className="flex items-center gap-2"><span className={`inline-block w-2.5 h-2.5 rounded-full ${getStatusColor(profile?.status)} animate-pulse`}></span><span>{profile?.status}</span></div></li>
+                    <li><span className="text-slate-500 block text-xs uppercase mb-1">Statut</span><div className="flex items-center gap-2"><span className={`inline-block w-2.5 h-2.5 rounded-full ${getStatusColor(profile?.status)} animate-pulse`}></span><span>{profile?.status}</span></div></li>
                   </ul>
                   
                   {profile?.languages && profile.languages.length > 0 && (<div className="mt-6 pt-4 border-t border-slate-800"><h4 className="text-slate-500 text-xs uppercase mb-2">Langues</h4><div className="flex flex-wrap gap-2">{profile.languages.map((l, i) => <span key={i} className="text-slate-300 text-xs border border-slate-700 px-2 py-1 rounded">{l}</span>)}</div></div>)}
                   
-                  {profile?.certifications && profile.certifications.length > 0 && (<div className="mt-4 pt-4 border-t border-slate-800"><h4 className="text-slate-500 text-xs uppercase mb-2">Diplômes / Certifs</h4><ul className="space-y-1">{profile.certifications.map((c, i) => (<li key={i} className="text-slate-300 text-xs flex items-start gap-2"><span className="text-blue-500">✓</span> {c}</li>))}</ul></div>)}
+                  {profile?.certifications && profile.certifications.length > 0 && (<div className="mt-4 pt-4 border-t border-slate-800"><h4 className="text-slate-500 text-xs uppercase mb-2">Diplômes / Certifications</h4><ul className="space-y-1">{profile.certifications.map((c, i) => (<li key={i} className="text-slate-300 text-xs flex items-start gap-2"><span className="text-blue-500">✓</span> {c}</li>))}</ul></div>)}
                   
-                  <div className="mt-4 pt-4 border-t border-slate-800"><h4 className="text-slate-500 text-xs uppercase mb-3">Hard Skills</h4><div className="flex flex-wrap gap-2">{profile?.hard_skills?.map((skill, i) => (<span key={i} className="bg-slate-800 text-slate-300 text-xs px-2 py-1 rounded border border-slate-700 hover:border-green-500 transition-colors cursor-default">{skill}</span>))}</div></div>
+                  <div className="mt-4 pt-4 border-t border-slate-800"><h4 className="text-slate-500 text-xs uppercase mb-3">Compétences</h4><div className="flex flex-wrap gap-2">{profile?.hard_skills?.map((skill, i) => (<span key={i} className="bg-slate-800 text-slate-300 text-xs px-2 py-1 rounded border border-slate-700 hover:border-green-500 transition-colors cursor-default">{skill}</span>))}</div></div>
                 </>
               )}
               
