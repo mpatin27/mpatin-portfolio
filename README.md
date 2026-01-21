@@ -113,9 +113,9 @@ Le projet repose sur 3 tables principales dans Supabase :
 
 Mathéo PATIN | Admin Sys, Réseaux & BDD
 
-🌐 [Portfolio](https://mpatin-portfolio.vercel.app)
-🐙 [GitHub](https://github.com/mpatin27)
-🌐 [LinkedIn](www.linkedin.com/in/patin-matheo)
+- 🌐 [Portfolio](https://mpatin-portfolio.vercel.app)
+- 🐙 [GitHub](https://github.com/mpatin27)
+- 💼 [LinkedIn](www.linkedin.com/in/patin-matheo)
 
 ---
 
