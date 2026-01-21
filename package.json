@@ -11,6 +11,11 @@
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
+    "@hello-pangea/dnd": "^18.0.1",
+    "@react-pdf/renderer": "^4.3.2",
+    "@supabase/supabase-js": "^2.91.0",
+    "@vercel/analytics": "^1.6.1",
+    "framer-motion": "^12.28.1",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-router-dom": "^7.12.0"

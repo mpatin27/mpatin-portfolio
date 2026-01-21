@@ -1,11 +1,14 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Navbar from './components/Navbar'
-import Footer from './components/Footer' // 1. On importe le Footer
+import Footer from './components/Footer'
+import ProtectedRoute from './components/ProtectedRoute'
 
 import Home from './pages/Home'
 import Portfolio from './pages/Portfolio'
 import CV from './pages/CV'
 import Contact from './pages/Contact'
+import Admin from './pages/Admin'
+import Login from './pages/Login'
 import NotFound from './pages/NotFound'
 
 function App() {
@@ -26,6 +29,11 @@ function App() {
             <Route path="/portfolio" element={<Portfolio />} />
             <Route path="/cv" element={<CV />} />
             <Route path="/contact" element={<Contact />} />
+
+            //Route protégée autour de l'Admin
+            <Route path="/admin" element={<ProtectedRoute><Admin /></ProtectedRoute>} />
+            
+            <Route path="/login" element={<Login />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </main>
