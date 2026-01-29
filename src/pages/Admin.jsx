@@ -249,7 +249,7 @@ export default function Admin() {
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
                   <div>
                     <h2 className="text-2xl font-bold flex items-center gap-2">
-                      <span className="text-yellow-500">👀</span> PUBLIC_DISPLAY_ORDER
+                      <span className="text-yellow-500">{'>'}</span> PUBLIC_DISPLAY_ORDER
                     </h2>
                     <p className="text-slate-500 text-sm mt-1">Ordre d'affichage officiel sur la page Portfolio.</p>
                   </div>
