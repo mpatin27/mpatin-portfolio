@@ -24,12 +24,12 @@ const IconTabDisplay = () => <svg className="w-5 h-5" fill="none" viewBox="0 0 2
 const IconTabCV = () => <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>;
 
 const STATUS_CONFIG = {
-  'idea': { label: 'Idée', Icon: IconIdea, color: 'text-yellow-500', border: 'border-yellow-500/30 hover:border-yellow-500', bg: 'bg-yellow-500/5' },
-  'dev': { label: 'En Dév', Icon: IconDev, color: 'text-blue-500', border: 'border-blue-500/30 hover:border-blue-500', bg: 'bg-blue-500/5' },
-  'test': { label: 'Test / Beta', Icon: IconTest, color: 'text-purple-500', border: 'border-purple-500/30 hover:border-purple-500', bg: 'bg-purple-500/5' },
   'prod': { label: 'En Ligne', Icon: IconProd, color: 'text-green-500', border: 'border-green-500/30 hover:border-green-500', bg: 'bg-green-500/5' },
-  'on-hold': { label: 'En Pause', Icon: IconPause, color: 'text-orange-500', border: 'border-orange-500/30 hover:border-orange-500', bg: 'bg-orange-500/5' },
+  'dev': { label: 'En Dév', Icon: IconDev, color: 'text-blue-500', border: 'border-blue-500/30 hover:border-blue-500', bg: 'bg-blue-500/5' },
+  'idea': { label: 'Idée', Icon: IconIdea, color: 'text-yellow-500', border: 'border-yellow-500/30 hover:border-yellow-500', bg: 'bg-yellow-500/5' },
   'cancelled': { label: 'Annulé', Icon: IconCancel, color: 'text-red-500', border: 'border-red-500/30 hover:border-red-500', bg: 'bg-red-500/5' },
+  'test': { label: 'Test / Beta', Icon: IconTest, color: 'text-purple-500', border: 'border-purple-500/30 hover:border-purple-500', bg: 'bg-purple-500/5' },
+  'on-hold': { label: 'En Pause', Icon: IconPause, color: 'text-orange-500', border: 'border-orange-500/30 hover:border-orange-500', bg: 'bg-orange-500/5' },
   'archived': { label: 'Archivé', Icon: IconArchive, color: 'text-slate-500', border: 'border-slate-500/30 hover:border-slate-500', bg: 'bg-slate-500/5' },
 };
 
