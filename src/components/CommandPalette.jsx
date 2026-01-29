@@ -1,12 +1,19 @@
 import { useEffect, useState } from 'react';
-import { Command } from 'cmdk'; // La librairie magique
+import { Command } from 'cmdk'; 
 import { useNavigate } from 'react-router-dom';
+
+// Icône pour le bouton flottant
+const IconCommand = () => (
+  <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+  </svg>
+);
 
 export default function CommandPalette() {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
 
-  // Gestion du raccourci clavier (Ctrl + K ou Cmd + K)
+  // Gestion du raccourci clavier
   useEffect(() => {
     const down = (e) => {
       if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
@@ -18,90 +25,91 @@ export default function CommandPalette() {
     return () => document.removeEventListener('keydown', down);
   }, []);
 
-  // Fonction pour naviguer et fermer la palette
   const runCommand = (command) => {
     setOpen(false);
     command();
   };
 
-  if (!open) return null;
-
   return (
-    <div className="fixed inset-0 z-[9999] bg-black/60 backdrop-blur-sm flex items-start justify-center pt-[20vh] animate-fade-in">
-      
-      <div className="w-full max-w-lg shadow-2xl rounded-xl overflow-hidden border border-slate-700 bg-[#0B1120]">
-        <Command className="w-full" label="Command Menu">
+    <>
+      {/* --- BOUTON FLOTTANT MOBILE (Visible uniquement < LG) --- */}
+      <button
+        onClick={() => setOpen(true)}
+        className="fixed bottom-6 right-6 z-[90] p-4 bg-slate-900 border border-green-500 text-green-500 rounded-full shadow-lg shadow-green-500/20 lg:hidden hover:bg-slate-800 active:scale-95 transition-all"
+        aria-label="Ouvrir les commandes"
+      >
+        <IconCommand />
+      </button>
+
+      {/* --- LA PALETTE (Affichée si open est true) --- */}
+      {open && (
+        <div className="fixed inset-0 z-[9999] bg-black/80 backdrop-blur-sm flex items-start justify-center pt-[15vh] px-4 animate-fade-in" onClick={(e) => { if(e.target === e.currentTarget) setOpen(false) }}>
           
-          {/* BARRE DE RECHERCHE */}
-          <div className="flex items-center border-b border-slate-700 px-4">
-            <span className="text-green-500 mr-2 font-mono text-lg">&gt;</span>
-            <Command.Input 
-              autoFocus
-              placeholder="Type a command..."
-              className="w-full bg-transparent py-4 text-white placeholder-slate-500 outline-none font-mono text-sm h-14"
-            />
-            <div className="text-xs text-slate-500 font-mono border border-slate-700 rounded px-2 py-1">ESC</div>
+          <div className="w-full max-w-lg shadow-2xl rounded-xl overflow-hidden border border-slate-700 bg-[#0B1120]">
+            <Command className="w-full" label="Command Menu">
+              
+              {/* BARRE DE RECHERCHE */}
+              <div className="flex items-center border-b border-slate-700 px-4">
+                <span className="text-green-500 mr-2 font-mono text-lg">&gt;</span>
+                <Command.Input 
+                  autoFocus
+                  placeholder="Type a command..."
+                  className="w-full bg-transparent py-4 text-white placeholder-slate-500 outline-none font-mono text-sm h-14"
+                />
+                <button onClick={() => setOpen(false)} className="text-xs text-slate-500 font-mono border border-slate-700 rounded px-2 py-1 hover:text-white hover:border-slate-500 transition-colors">
+                  ESC
+                </button>
+              </div>
+
+              {/* LISTE DES RÉSULTATS */}
+              <Command.List className="max-h-[300px] overflow-y-auto p-2 scroll-py-2 custom-scrollbar">
+                
+                <Command.Empty className="py-6 text-center text-sm text-slate-500 font-mono">
+                  No results found.
+                </Command.Empty>
+
+                <Command.Group heading={<span className="text-xs font-bold text-slate-500 uppercase px-2 mb-2 block mt-2">Navigation</span>}>
+                  <Item onSelect={() => runCommand(() => navigate('/'))}>
+                    <IconHome /> <span>Go to Home</span>
+                  </Item>
+                  <Item onSelect={() => runCommand(() => navigate('/portfolio'))}>
+                    <IconCode /> <span>View Projects</span>
+                  </Item>
+                  <Item onSelect={() => runCommand(() => navigate('/cv'))}>
+                    <IconFile /> <span>Read Resume (CV)</span>
+                  </Item>
+                  <Item onSelect={() => runCommand(() => navigate('/contact'))}>
+                    <IconMail /> <span>Contact Me</span>
+                  </Item>
+                </Command.Group>
+
+                <Command.Group heading={<span className="text-xs font-bold text-slate-500 uppercase px-2 mb-2 block mt-2">External Links</span>}>
+                  <Item onSelect={() => runCommand(() => window.open('https://github.com/mpatin27', '_blank'))}>
+                    <IconGithub /> <span>GitHub Profile</span>
+                  </Item>
+                  <Item onSelect={() => runCommand(() => window.open('https://linkedin.com/in/matheo-patin', '_blank'))}>
+                    <IconLinkedin /> <span>LinkedIn</span>
+                  </Item>
+                </Command.Group>
+
+                <Command.Group heading={<span className="text-xs font-bold text-slate-500 uppercase px-2 mb-2 block mt-2">System</span>}>
+                  <Item onSelect={() => runCommand(() => navigate('/login'))}>
+                    <IconLock /> <span>Admin Login</span>
+                  </Item>
+                </Command.Group>
+
+              </Command.List>
+
+              <div className="border-t border-slate-800 py-2 px-4 flex justify-between items-center text-[10px] text-slate-500 font-mono bg-slate-900/50">
+                 <span>Navigation</span>
+                 <span>Matheo OS v1.0</span>
+              </div>
+
+            </Command>
           </div>
-
-          {/* LISTE DES RÉSULTATS */}
-          <Command.List className="max-h-[300px] overflow-y-auto p-2 scroll-py-2 custom-scrollbar">
-            
-            <Command.Empty className="py-6 text-center text-sm text-slate-500 font-mono">
-              No results found.
-            </Command.Empty>
-
-            {/* GROUPE : NAVIGATION */}
-            <Command.Group heading={<span className="text-xs font-bold text-slate-500 uppercase px-2 mb-2 block mt-2">Navigation</span>}>
-              
-              <Item onSelect={() => runCommand(() => navigate('/'))}>
-                <IconHome /> <span>Go to Home</span>
-              </Item>
-              
-              <Item onSelect={() => runCommand(() => navigate('/portfolio'))}>
-                <IconCode /> <span>View Projects</span>
-              </Item>
-              
-              <Item onSelect={() => runCommand(() => navigate('/cv'))}>
-                <IconFile /> <span>Read Resume (CV)</span>
-              </Item>
-              
-              <Item onSelect={() => runCommand(() => navigate('/contact'))}>
-                <IconMail /> <span>Contact Me</span>
-              </Item>
-
-            </Command.Group>
-
-            {/* GROUPE : SOCIALS / ACTIONS */}
-            <Command.Group heading={<span className="text-xs font-bold text-slate-500 uppercase px-2 mb-2 block mt-2">External Links</span>}>
-              
-              <Item onSelect={() => runCommand(() => window.open('https://github.com/mpatin27', '_blank'))}>
-                <IconGithub /> <span>GitHub Profile</span>
-              </Item>
-              
-              <Item onSelect={() => runCommand(() => window.open('https://www.linkedin.com/in/patin-matheo', '_blank'))}>
-                <IconLinkedin /> <span>LinkedIn</span>
-              </Item>
-
-            </Command.Group>
-
-             {/* GROUPE : SYSTEM */}
-             <Command.Group heading={<span className="text-xs font-bold text-slate-500 uppercase px-2 mb-2 block mt-2">System</span>}>
-              <Item onSelect={() => runCommand(() => navigate('/login'))}>
-                <IconLock /> <span>Admin Login</span>
-              </Item>
-            </Command.Group>
-
-          </Command.List>
-
-          {/* FOOTER */}
-          <div className="border-t border-slate-800 py-2 px-4 flex justify-between items-center text-[10px] text-slate-500 font-mono bg-slate-900/50">
-             <span>Utilisez les flèches pour vous déplacez</span>
-             <span>Entrer pour sélectionner</span>
-          </div>
-
-        </Command>
-      </div>
-    </div>
+        </div>
+      )}
+    </>
   );
 }
 
@@ -117,7 +125,7 @@ function Item({ children, onSelect }) {
   );
 }
 
-// --- ICÔNES SVG SIMPLES ---
+// --- ICÔNES SVG ---
 const IconHome = () => <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>;
 const IconCode = () => <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>;
 const IconFile = () => <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>;

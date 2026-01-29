@@ -20,6 +20,31 @@ export default function Portfolio() {
     setLoading(false);
   }
 
+  // --- HELPER : COULEURS DES BADGES ---
+  const getStatusStyle = (status) => {
+    switch (status) {
+      case 'dev': return 'bg-yellow-900/20 text-yellow-400 border-yellow-700/50';
+      case 'test': return 'bg-blue-900/20 text-blue-400 border-blue-700/50';
+      case 'archived': return 'bg-slate-800 text-slate-400 border-slate-600';
+      case 'idea': return 'bg-purple-900/20 text-purple-400 border-purple-700/50';
+      case 'cancelled': return 'bg-red-900/20 text-red-400 border-red-700/50';
+      case 'on-hold': return 'bg-orange-900/20 text-orange-400 border-orange-700/50';
+      default: return 'bg-green-900/20 text-green-400 border-green-700/50'; // Prod
+    }
+  };
+
+  const getStatusLabel = (status) => {
+    switch (status) {
+      case 'dev': return 'EN DÉVELOPPEMENT';
+      case 'test': return 'PHASE DE BETA / TEST';
+      case 'archived': return 'ARCHIVÉ';
+      case 'idea': return 'IDÉE';
+      case 'cancelled': return 'ANNULÉ';
+      case 'on-hold': return 'EN PAUSE';
+      default: return 'TERMINÉ';
+    }
+  };
+
   return (
     <PageTransition>
       <SEO
@@ -45,14 +70,17 @@ export default function Portfolio() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
                 onClick={() => setSelectedProject(project)}
-                className="bg-slate-900 border border-slate-800 rounded-lg overflow-hidden hover:border-green-500/50 hover:shadow-[0_0_20px_rgba(34,197,94,0.1)] transition-all group flex flex-col cursor-pointer"
+                className="bg-slate-900 border border-slate-800 rounded-lg overflow-hidden hover:border-green-500/50 hover:shadow-xl hover:shadow-green-900/20 transition-all group flex flex-col cursor-pointer relative"
               >
-                <div className="h-48 overflow-hidden bg-slate-950 relative">
+                {/* Image (Sans badge dessus) */}
+                <div className="h-48 overflow-hidden bg-slate-950 relative border-b border-slate-800">
                   {project.cover_url ? (
                     <img src={project.cover_url} alt={project.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-slate-700 font-mono text-sm border-b border-slate-800">NO_IMAGE</div>
+                    <div className="w-full h-full flex items-center justify-center text-slate-700 font-mono text-sm">NO_IMAGE</div>
                   )}
+                  
+                  {/* Bouton LIVE (Reste sur l'image car il a un fond sombre) */}
                   <div className="absolute top-2 right-2 flex gap-2">
                     {project.demo_link && (
                       <a 
@@ -68,9 +96,17 @@ export default function Portfolio() {
                 </div>
 
                 <div className="p-6 flex-grow flex flex-col">
-                  <h3 className="text-xl font-bold text-white mb-2 font-mono">{project.title}</h3>
                   
-                  {/* MODIFICATION ICI : On affiche short_description par défaut, sinon description tronquée */}
+                  {/* --- NOUVEAU EMPLACEMENT DU BADGE (Au dessus du titre) --- */}
+                  {project.status && (
+                    <div className="mb-3">
+                       <span className={`px-2 py-1 rounded border text-[10px] font-bold font-mono ${getStatusStyle(project.status)}`}>
+                          {getStatusLabel(project.status)}
+                       </span>
+                    </div>
+                  )}
+
+                  <h3 className="text-xl font-bold text-white mb-2 font-mono">{project.title}</h3>
                   <p className="text-slate-400 text-sm mb-4 line-clamp-3 flex-grow">
                     {project.short_description || project.description}
                   </p>
@@ -103,12 +139,12 @@ export default function Portfolio() {
           isOpen={!!selectedProject}
           project={selectedProject ? {
              ...selectedProject,
-             // On passe toujours la description longue (technique) à la modale
              description: selectedProject.description,
              image_url: selectedProject.cover_url,
              technologies: selectedProject.tags,
              github_url: selectedProject.repo_link,
-             demo_url: selectedProject.demo_link
+             demo_url: selectedProject.demo_link,
+             status: selectedProject.status
           } : null}
           onClose={() => setSelectedProject(null)}
         />
